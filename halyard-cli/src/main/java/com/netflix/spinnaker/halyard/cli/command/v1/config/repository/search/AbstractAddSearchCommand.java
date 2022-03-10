@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -42,12 +43,14 @@ public abstract class AbstractAddSearchCommand extends AbstractHasSearchCommand 
       variableArity = true,
       names = "--read-permissions",
       description = SearchCommandProperties.READ_PERMISSION_DESCRIPTION)
+  // private Set<String> readPermissions = new HashSet<>();
   private List<String> readPermissions = new ArrayList<>();
 
   @Parameter(
       variableArity = true,
       names = "--write-permissions",
       description = SearchCommandProperties.WRITE_PERMISSION_DESCRIPTION)
+  // private Set<String> writePermissions = new HashSet<>();
   private List<String> writePermissions = new ArrayList<>();
 
   protected abstract Search buildSearch(String searchName);
@@ -61,8 +64,10 @@ public abstract class AbstractAddSearchCommand extends AbstractHasSearchCommand 
     String searchName = getSearchName();
     Search search = buildSearch(searchName);
     String repositoryName = getRepositoryName();
-    search.getPermissions().add(Authorization.READ, readPermissions);
-    search.getPermissions().add(Authorization.WRITE, writePermissions);
+    // search.getPermissions().add(Authorization.READ, readPermissions);
+    // search.getPermissions().add(Authorization.WRITE, writePermissions);
+    search.getPermissions().add(Authorization.READ, Set.copyOf(readPermissions));
+    search.getPermissions().add(Authorization.WRITE, Set.copyOf(writePermissions));
 
     String currentDeployment = getCurrentDeployment();
     new OperationHandler<Void>()

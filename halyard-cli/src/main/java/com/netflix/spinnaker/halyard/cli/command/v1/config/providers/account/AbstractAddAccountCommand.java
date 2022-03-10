@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -91,8 +92,8 @@ public abstract class AbstractAddAccountCommand extends AbstractHasAccountComman
     String accountName = getAccountName();
     Account account = buildAccount(accountName);
     account.setRequiredGroupMembership(requiredGroupMembership);
-    account.getPermissions().add(Authorization.READ, readPermissions);
-    account.getPermissions().add(Authorization.WRITE, writePermissions);
+    account.getPermissions().add(Authorization.READ, Set.copyOf(readPermissions));
+    account.getPermissions().add(Authorization.WRITE, Set.copyOf(writePermissions));
     account.setEnvironment(isSet(environment) ? environment : account.getEnvironment());
     String providerName = getProviderName();
 
