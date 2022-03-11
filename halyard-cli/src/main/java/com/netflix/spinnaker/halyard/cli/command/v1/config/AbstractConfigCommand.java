@@ -108,14 +108,14 @@ public abstract class AbstractConfigCommand extends NestableCommand {
    * remove, and entries to add.
    *
    * @param old is the prior set of entries - these are modified to addTo and removeFrom.
-   * @param setTo is a new set of entries. If provided, the old ones are discarded.
+   * @param setTo is a new list of entries. If provided, the old ones are discarded.
    * @param addTo is a single entry to add to old.
    * @param removeFrom is a single entry to remove from old.
    * @return the updated set of entries.
    * @throws IllegalArgumentException when setTo and (addTo or removeFrom) are provided.
    */
   private static Set<String> updateStringSet(
-      Set<String> old, Set<String> setTo, String addTo, String removeFrom) {
+      Set<String> old, List<String> setTo, String addTo, String removeFrom) {
     if (old == null) {
       old = new HashSet<>();
     }
@@ -130,7 +130,7 @@ public abstract class AbstractConfigCommand extends NestableCommand {
     }
 
     if (set) {
-      return setTo;
+      return Set.copyOf(setTo);
     } else {
       if (add) {
         old.add(addTo);
@@ -146,10 +146,10 @@ public abstract class AbstractConfigCommand extends NestableCommand {
 
   protected static void updatePermissions(
       Permissions.Builder permissions,
-      Set<String> readPermissions,
+      List<String> readPermissions,
       String addReadPermission,
       String removeReadPermission,
-      Set<String> writePermissions,
+      List<String> writePermissions,
       String addWritePermission,
       String removeWritePermission) {
     Set<String> resolvedReadPermissions =

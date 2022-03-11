@@ -24,8 +24,9 @@ import com.netflix.spinnaker.halyard.cli.command.v1.NestableCommand;
 import com.netflix.spinnaker.halyard.cli.services.v1.Daemon;
 import com.netflix.spinnaker.halyard.cli.services.v1.OperationHandler;
 import com.netflix.spinnaker.halyard.config.model.v1.node.CIAccount;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -43,13 +44,13 @@ public abstract class AbstractAddMasterCommand extends AbstractHasMasterCommand 
       variableArity = true,
       names = "--read-permissions",
       description = MasterCommandProperties.READ_PERMISSION_DESCRIPTION)
-  private Set<String> readPermissions = new HashSet<>();
+  private List<String> readPermissions = new ArrayList<>();
 
   @Parameter(
       variableArity = true,
       names = "--write-permissions",
       description = MasterCommandProperties.WRITE_PERMISSION_DESCRIPTION)
-  private Set<String> writePermissions = new HashSet<>();
+  private List<String> writePermissions = new ArrayList<>();
 
   protected abstract CIAccount buildMaster(String masterName);
 
@@ -62,8 +63,8 @@ public abstract class AbstractAddMasterCommand extends AbstractHasMasterCommand 
     String masterName = getMasterName();
     CIAccount account = buildMaster(masterName);
     String ciName = getCiName();
-    account.getPermissions().add(Authorization.READ, readPermissions);
-    account.getPermissions().add(Authorization.WRITE, writePermissions);
+    account.getPermissions().add(Authorization.READ, Set.copyOf(readPermissions));
+    account.getPermissions().add(Authorization.WRITE, Set.copyOf(writePermissions));
 
     String currentDeployment = getCurrentDeployment();
     new OperationHandler<Void>()
